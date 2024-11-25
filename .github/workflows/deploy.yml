@@ -34,9 +34,9 @@ jobs:
 
     # Step 4: Login to Azure using individual secrets
     - name: Login to Azure
-      uses: azure/login@v2
+      uses: azure/login@v1
       with:
-         creds: ${{ secrets.AZURE_CREDENTIALS }}  # Use Service Principal credentials in JSON format
+         #creds: ${{ secrets.AZURE_CREDENTIALS }}  # Use Service Principal credentials in JSON format
          client-id: ${{ secrets.AZURE_CLIENT_ID }}
          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
