@@ -71,6 +71,8 @@ jobs:
         ls
         pwd
         terraform plan -out=tfplan
+      env:
+        azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
 
     # Step 8: Terraform Apply
     - name: Terraform Apply
@@ -79,6 +81,8 @@ jobs:
         ls
         pwd
         terraform apply -auto-approve tfplan
+      env:
+        azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
 
     # Step 9: Get the Storage Account Name Output from Terraform
     - name: Get Storage Account Name
