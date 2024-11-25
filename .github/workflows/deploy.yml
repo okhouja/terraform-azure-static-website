@@ -22,6 +22,10 @@ jobs:
     - name: List repository files
       run: ls -R
 
+    # Step 3: List terraform directory contents (for debugging)
+    - name: List terraform directory files
+      run: ls -R terraform
+
     # Step 3: Set up Terraform
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v1
