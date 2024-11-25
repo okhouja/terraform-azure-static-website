@@ -38,16 +38,6 @@ jobs:
       with:
          creds: ${{ secrets.AZURE_CREDENTIALS }}  # Use Service Principal credentials in JSON format
     
-    # Debugging Step
-    - name: Debug environment variables
-      run: |
-        echo "ARM_CLIENT_ID: $ARM_CLIENT_ID"
-        echo "ARM_CLIENT_SECRET: $ARM_CLIENT_SECRET"
-        echo "ARM_SUBSCRIPTION_ID: $ARM_SUBSCRIPTION_ID"
-        echo "ARM_TENANT_ID: $ARM_TENANT_ID"
-
-   
-
     # Step 5: Change to the directory containing Terraform files
     - name: Change directory to terraform
       run: cd terraform
@@ -72,16 +62,17 @@ jobs:
 
     # Step 7: Terraform Plan
     - name: Terraform Plan
-      run: |  
-        cd terraform  
+      run: |
+        export ARM_CLIENT_ID=$(echo "${{ secrets.AZURE_CREDENTIALS }}" | jq -r '.clientId')
+        export ARM_CLIENT_SECRET=$(echo "${{ secrets.AZURE_CREDENTIALS }}" | jq -r '.clientSecret')
+        export ARM_SUBSCRIPTION_ID=$(echo "${{ secrets.AZURE_CREDENTIALS }}" | jq -r '.subscriptionId')
+        export ARM_TENANT_ID=$(echo "${{ secrets.AZURE_CREDENTIALS }}" | jq -r '.tenantId')
+        
+        cd terraform
         ls
         pwd
-        echo "ARM_CLIENT_ID: $ARM_CLIENT_ID"
-        echo "ARM_CLIENT_SECRET: $ARM_CLIENT_SECRET"
-        echo "ARM_SUBSCRIPTION_ID: $ARM_SUBSCRIPTION_ID"
-        echo "ARM_TENANT_ID: $ARM_TENANT_ID"
         terraform plan -out=tfplan
-      
+
     # Step 8: Terraform Apply
     - name: Terraform Apply
       run: |   
