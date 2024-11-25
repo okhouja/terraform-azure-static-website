@@ -46,11 +46,14 @@ jobs:
     - name: Change directory to terraform
       run: cd terraform
     - name: List repository files
-      run: ls -R
+      run: |
+        ls
+        pwd
 
     # Step 6: Terraform Init
     - name: Terraform Init
       run: |
+        cd terraform
         terraform init
         ls
         pwd
