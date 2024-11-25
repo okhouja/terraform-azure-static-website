@@ -22,7 +22,7 @@ jobs:
 
     # Step 3: Login to Azure using individual secrets
     - name: Login to Azure
-      uses: azure/login@v1
+      uses: azure/login@v2
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
