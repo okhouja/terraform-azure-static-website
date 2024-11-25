@@ -56,12 +56,19 @@ jobs:
         cd terraform  # Ensure you're in the terraform directory
         terraform apply -auto-approve tfplan
 
-    # Step 9: Upload files to Azure Blob Storage $web container
+    # Step 9: Get the Storage Account Name Output from Terraform
+    - name: Get Storage Account Name
+      id: storage_account
+      run: |
+        STORAGE_ACCOUNT_NAME=$(terraform output -raw storage_account_name)
+        echo "STORAGE_ACCOUNT_NAME=$STORAGE_ACCOUNT_NAME" >> $GITHUB_ENV
+
+    # Step 10: Upload files to Azure Blob Storage $web container
     - name: Upload files to $web container
       run: |
-        az storage blob upload-batch -d \$web --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }} -s ./static-website
+        az storage blob upload-batch -d \$web --account-name ${{ env.STORAGE_ACCOUNT_NAME }} -s ./static-website
 
-    # Step 10: Terraform Destroy (Optional)
+    # Step 11: Terraform Destroy (Optional)
     - name: Terraform Destroy (Optional)
       run: |
         cd terraform
