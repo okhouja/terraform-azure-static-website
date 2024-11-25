@@ -34,23 +34,36 @@ jobs:
     - name: Extract ZIP file
       run: unzip -o ./website.zip -d ./static-website
 
-    # Step 5: Change to the directory containing Terraform files (if applicable)
+    # Step 5: Change to the directory containing Terraform files
     - name: Change directory to terraform
       run: cd terraform
 
     # Step 6: Terraform Init
     - name: Terraform Init
-      run: terraform init
+      run: |
+        cd terraform  # Navigate to the terraform directory
+        terraform init
 
     # Step 7: Terraform Plan
     - name: Terraform Plan
-      run: terraform plan -out=tfplan
+      run: |
+        cd terraform  # Ensure you're in the terraform directory
+        terraform plan -out=tfplan
 
     # Step 8: Terraform Apply
     - name: Terraform Apply
-      run: terraform apply -auto-approve tfplan
+      run: |
+        cd terraform  # Ensure you're in the terraform directory
+        terraform apply -auto-approve tfplan
 
-    # Step 9: Terraform Destroy (Optional)
+    # Step 9: Upload files to Azure Blob Storage $web container
+    - name: Upload files to $web container
+      run: |
+        az storage blob upload-batch -d \$web --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }} -s ./static-website
+
+    # Step 10: Terraform Destroy (Optional)
     - name: Terraform Destroy (Optional)
-      run: terraform destroy -auto-approve
+      run: |
+        cd terraform
+        terraform destroy -auto-approve
       if: github.event_name == 'workflow_dispatch'
