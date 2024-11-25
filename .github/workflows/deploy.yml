@@ -48,7 +48,8 @@ jobs:
     - name: Terraform Init
       run: |
         terraform init
-        ls -R
+        ls
+        pwd
 
    # Step 7: Enable Detailed Logs for Terraform
     - name: Enable Detailed Logs for Terraform
@@ -57,18 +58,17 @@ jobs:
        export TF_LOG_PATH=terraform-debug.log
 
     # Step 7: Terraform Plan
-    - name: List repository files
-      run: ls -R
     - name: Terraform Plan
-      run: |
+      run: |    
+        ls
+        pwd
         terraform plan -out=tfplan
 
-
     # Step 8: Terraform Apply
-    - name: List repository files
-      run: ls -R
     - name: Terraform Apply
-      run: |
+      run: |   
+        ls
+        pwd
         terraform apply -auto-approve tfplan
 
     # Step 9: Get the Storage Account Name Output from Terraform
