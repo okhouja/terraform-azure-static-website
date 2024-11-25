@@ -47,13 +47,11 @@ jobs:
     # Step 7: Terraform Plan
     - name: Terraform Plan
       run: |
-        cd terraform  # Ensure you're in the terraform directory
         terraform plan -out=tfplan
 
     # Step 8: Terraform Apply
     - name: Terraform Apply
       run: |
-        cd terraform  # Ensure you're in the terraform directory
         terraform apply -auto-approve tfplan
 
     # Step 9: Get the Storage Account Name Output from Terraform
