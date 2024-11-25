@@ -34,19 +34,23 @@ jobs:
     - name: Extract ZIP file
       run: unzip -o ./website.zip -d ./static-website
 
-    # Step 5: Terraform Init
+    # Step 5: Change to the directory containing Terraform files (if applicable)
+    - name: Change directory to terraform
+      run: cd terraform
+
+    # Step 6: Terraform Init
     - name: Terraform Init
       run: terraform init
 
-    # Step 6: Terraform Plan
+    # Step 7: Terraform Plan
     - name: Terraform Plan
       run: terraform plan -out=tfplan
 
-    # Step 7: Terraform Apply
+    # Step 8: Terraform Apply
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan
 
-    # Step 8: Terraform Destroy
+    # Step 9: Terraform Destroy (Optional)
     - name: Terraform Destroy (Optional)
       run: terraform destroy -auto-approve
       if: github.event_name == 'workflow_dispatch'
