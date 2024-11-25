@@ -17,14 +17,18 @@ jobs:
     # Step 1: Checkout the code from the repo
     - name: Checkout code
       uses: actions/checkout@v3
+    
+    # Step 2: List contents of the repository (for debugging)
+    - name: List repository files
+      run: ls -R
 
-    # Step 2: Set up Terraform
+    # Step 3: Set up Terraform
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v1
       with:
         terraform_version: '1.9.8'
 
-    # Step 3: Login to Azure using individual secrets
+    # Step 4: Login to Azure using individual secrets
     - name: Login to Azure
       uses: azure/login@v2
       with:
@@ -37,18 +41,32 @@ jobs:
     # Step 5: Change to the directory containing Terraform files
     - name: Change directory to terraform
       run: cd terraform
+    - name: List repository files
+      run: ls -R
 
     # Step 6: Terraform Init
     - name: Terraform Init
       run: |
         terraform init
+        ls -R
+
+   # Step 7: Enable Detailed Logs for Terraform
+    - name: Enable Detailed Logs for Terraform
+      run: |
+       export TF_LOG=DEBUG
+       export TF_LOG_PATH=terraform-debug.log
 
     # Step 7: Terraform Plan
+    - name: List repository files
+      run: ls -R
     - name: Terraform Plan
       run: |
         terraform plan -out=tfplan
 
+
     # Step 8: Terraform Apply
+    - name: List repository files
+      run: ls -R
     - name: Terraform Apply
       run: |
         terraform apply -auto-approve tfplan
