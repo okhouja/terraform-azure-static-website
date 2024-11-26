@@ -52,62 +52,42 @@ jobs:
         ls
         pwd
 
-   # Step 7: Enable Detailed Logs for Terraform
+    # Step 7: Terraform Plan
     - name: Enable Detailed Logs for Terraform
       id: plan
-      env:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      run: |
-            export TF_LOG=DEBUG
-            export TF_LOG_PATH=terraform-debug.log
-            ls
-            pwd
-            terraform plan -out=tfplan
+      run:  
+        terraform plan -out=tfplan \
+           -var "azure_client_id=${{ secrets.AZURE_CLIENT_ID }}" \
+           -var "azure_client_secret=${{ secrets.AZURE_CLIENT_SECRET }}" \
+           -var "azure_tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
+           -var "azure_subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}"
 
-    # Step 7: Terraform Plan
-    - name: Terraform Plan
-      run: |
-        echo "${{ secrets.AZURE_CREDENTIALS }}"       
-        export ARM_CLIENT_ID=$(echo "${{ secrets.AZURE_CREDENTIALS }}" | jq -r '.clientId')
-        export ARM_CLIENT_SECRET=$(echo "${{ secrets.AZURE_CREDENTIALS }}" | jq -r '.clientSecret')
-        export ARM_SUBSCRIPTION_ID=$(echo "${{ secrets.AZURE_CREDENTIALS }}" | jq -r '.subscriptionId')
-        export ARM_TENANT_ID=$(echo "${{ secrets.AZURE_CREDENTIALS }}" | jq -r '.tenantId')
-        
-        cd terraform
-        ls
-        pwd
-        terraform plan -out=tfplan
-
-    # Step 8: Terraform Apply
-    - name: Terraform Apply
-      run: |   
-        cd terraform
-        ls
-        pwd
-        terraform apply -auto-approve tfplan
+    # # Step 8: Terraform Apply
+    # - name: Terraform Apply
+    #   run: |   
+    #     ls
+    #     pwd
+    #     terraform apply -auto-approve tfplan
     
-     # Step 4: Unzip Static Website Files
-    - name: Extract ZIP file
-      run: unzip -o ./website.zip -d ./static-website
+    #  # Step 4: Unzip Static Website Files
+    # - name: Extract ZIP file
+    #   run: unzip -o ./website.zip -d ./static-website
 
-    # Step 9: Get the Storage Account Name Output from Terraform
-    - name: Get Storage Account Name
-      id: storage_account
-      run: |
-        STORAGE_ACCOUNT_NAME=$(terraform output -raw storage_account_name)
-        echo "STORAGE_ACCOUNT_NAME=$STORAGE_ACCOUNT_NAME" >> $GITHUB_ENV
+    # # Step 9: Get the Storage Account Name Output from Terraform
+    # - name: Get Storage Account Name
+    #   id: storage_account
+    #   run: |
+    #     STORAGE_ACCOUNT_NAME=$(terraform output -raw storage_account_name)
+    #     echo "STORAGE_ACCOUNT_NAME=$STORAGE_ACCOUNT_NAME" >> $GITHUB_ENV
 
-    # Step 10: Upload files to Azure Blob Storage $web container
-    - name: Upload files to $web container
-      run: |
-        az storage blob upload-batch -d \$web --account-name ${{ env.STORAGE_ACCOUNT_NAME }} -s ./static-website
+    # # Step 10: Upload files to Azure Blob Storage $web container
+    # - name: Upload files to $web container
+    #   run: |
+    #     az storage blob upload-batch -d \$web --account-name ${{ env.STORAGE_ACCOUNT_NAME }} -s ./static-website
 
-    # Step 11: Terraform Destroy (Optional)
-    - name: Terraform Destroy (Optional)
-      run: |
-        cd terraform
-        terraform destroy -auto-approve
-      if: github.event_name == 'workflow_dispatch'
+    # # Step 11: Terraform Destroy (Optional)
+    # - name: Terraform Destroy (Optional)
+    #   run: |
+    #     cd terraform
+    #     terraform destroy -auto-approve
+    #   if: github.event_name == 'workflow_dispatch'
