@@ -56,6 +56,7 @@ variable "storage_account_kind" {
 variable "website_zip_file" {
   description = "Path to the website ZIP file for deployment"
   type        = string
+  default     = ""  # You can provide a default empty string or placeholder
 }
 
 variable "container_name" {

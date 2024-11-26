@@ -37,7 +37,10 @@ jobs:
       uses: azure/login@v2
       with:
          creds: ${{ secrets.AZURE_CREDENTIALS }}  # Use Service Principal credentials in JSON format
-       
+
+     # Step 4: Unzip Static Website Files
+    - name: Extract ZIP file
+      run: unzip -o ./website.zip -d ./static-website   
     
     # Step 6: Terraform Init
     - name: Terraform Init
@@ -69,9 +72,10 @@ jobs:
     #     pwd
     #     terraform apply -auto-approve tfplan
     
-    #  # Step 4: Unzip Static Website Files
-    # - name: Extract ZIP file
-    #   run: unzip -o ./website.zip -d ./static-website
+         
+    # Step 4: Unzip Static Website Files
+    - name: Extract ZIP file
+      run: unzip -o ./website.zip -d ./static-website   
 
     # # Step 9: Get the Storage Account Name Output from Terraform
     # - name: Get Storage Account Name
