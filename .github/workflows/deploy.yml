@@ -88,9 +88,9 @@ jobs:
       run: |
         az storage blob upload-batch -d \$web --account-name ${{ env.STORAGE_ACCOUNT_NAME }} -s ./static-website
 
-    # Step 11: Terraform Destroy (Optional)
-    - name: Terraform Destroy (Optional)
-      run: |
-        cd terraform
-        terraform destroy -auto-approve
-    if: github.event_name == 'workflow_dispatch'
+    # # Step 11: Terraform Destroy (Optional)
+    # - name: Terraform Destroy (Optional)
+    #   run: |
+    #     cd terraform
+    #     terraform destroy -auto-approve
+    # if: github.event_name == 'workflow_dispatch'
