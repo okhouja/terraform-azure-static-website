@@ -55,7 +55,7 @@ jobs:
     # Step 7: Terraform Plan
     - name: Enable Detailed Logs for Terraform
       id: plan
-      run:  
+      run:  |
         terraform plan -out=tfplan \
            -var "azure_client_id=${{ secrets.AZURE_CLIENT_ID }}" \
            -var "azure_client_secret=${{ secrets.AZURE_CLIENT_SECRET }}" \
