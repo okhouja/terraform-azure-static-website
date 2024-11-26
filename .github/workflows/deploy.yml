@@ -38,7 +38,6 @@ jobs:
       with:
          creds: ${{ secrets.AZURE_CREDENTIALS }}  # Use Service Principal credentials in JSON format
 
-     
     # Step 6: Terraform Init
     - name: Terraform Init
       id: init
@@ -48,52 +47,68 @@ jobs:
     #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
     #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       run: |
-        terraform init
-        ls
-        pwd
+        terraform destroy
 
-    # Step 7: Terraform Plan
-    - name: Terraform Plan
-      id: plan
-      run:  |
-        terraform plan -out=tfplan \
-           -var "azure_client_id=${{ secrets.AZURE_CLIENT_ID }}" \
-           -var "azure_client_secret=${{ secrets.AZURE_CLIENT_SECRET }}" \
-           -var "azure_tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
-           -var "azure_subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+    # # Step 6: Terraform Init
+    # - name: Terraform Init
+    #   id: init
+    # #   env:
+    # #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
+    # #     client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+    # #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+    # #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    #   run: |
+    #     terraform init
+    
 
-    # Step 8: Terraform Apply
-    - name: Terraform Apply
-      run: |   
-        ls
-        pwd
-        terraform apply -auto-approve tfplan
+    # # Step 6: Import the existing resource if it already exists
+    # - name: Import existing resource group into Terraform state
+    #   run: |
+    #    terraform import azurerm_resource_group.resource_group /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.RESOURCE_GROUP_NAME }} || echo "Resource already imported or does not exist"
+
+
+    # # Step 7: Terraform Plan
+    # - name: Terraform Plan
+    #   id: plan
+    #   run:  |
+    #     terraform plan -out=tfplan \
+    #        -var "azure_client_id=${{ secrets.AZURE_CLIENT_ID }}" \
+    #        -var "azure_client_secret=${{ secrets.AZURE_CLIENT_SECRET }}" \
+    #        -var "azure_tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
+    #        -var "azure_subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+
+    # # Step 8: Terraform Apply
+    # - name: Terraform Apply
+    #   run: |   
+    #     ls
+    #     pwd
+    #     terraform apply -auto-approve tfplan
     
          
 
 
-    # Step 9: Get the Storage Account Name Output from Terraform
-    - name: Get Storage Account Name
-      id: storage_account
-      run: |
-        STORAGE_ACCOUNT_NAME=$(terraform output -raw storage_account_name)
-        echo "Storage Account Name: $STORAGE_ACCOUNT_NAME"
-        echo "STORAGE_ACCOUNT_NAME=$STORAGE_ACCOUNT_NAME" >> $GITHUB_ENV
-
-    # # Step 4: Unzip Static Website Files
-    # - name: Extract ZIP file
+    # # Step 9: Get the Storage Account Name Output from Terraform
+    # - name: Get Storage Account Name
+    #   id: storage_account
     #   run: |
-    #     cd ..
-    #     unzip -o ./website.zip -d ./static-website   
+    #     STORAGE_ACCOUNT_NAME=$(terraform output -raw storage_account_name)
+    #     echo "Storage Account Name: $STORAGE_ACCOUNT_NAME"
+    #     echo "STORAGE_ACCOUNT_NAME=$STORAGE_ACCOUNT_NAME" >> $GITHUB_ENV
 
-    # # Step 10: Upload files to Azure Blob Storage $web container
-    # - name: Upload files to $web container
-    #   run: |
-    #     az storage blob upload-batch -d \$web --account-name ${{ env.STORAGE_ACCOUNT_NAME }} -s ./static-website
+    # # # Step 4: Unzip Static Website Files
+    # # - name: Extract ZIP file
+    # #   run: |
+    # #     cd ..
+    # #     unzip -o ./website.zip -d ./static-website   
 
-    # # Step 11: Terraform Destroy (Optional)
-    # - name: Terraform Destroy (Optional)
-    #   run: |
-    #     cd terraform
-    #     terraform destroy -auto-approve
-    # if: github.event_name == 'workflow_dispatch'
+    # # # Step 10: Upload files to Azure Blob Storage $web container
+    # # - name: Upload files to $web container
+    # #   run: |
+    # #     az storage blob upload-batch -d \$web --account-name ${{ env.STORAGE_ACCOUNT_NAME }} -s ./static-website
+
+    # # # Step 11: Terraform Destroy (Optional)
+    # # - name: Terraform Destroy (Optional)
+    # #   run: |
+    # #     cd terraform
+    # #     terraform destroy -auto-approve
+    # # if: github.event_name == 'workflow_dispatch'
